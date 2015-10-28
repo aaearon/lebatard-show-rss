@@ -56,12 +56,14 @@ def generate_feed(output_file):
 
         if 'Local Hour' in e.title:
             fe.published(date)
-        if 'Hour 1' in e.title:
+        elif 'Hour 1' in e.title:
             fe.published(date + timedelta(hours=1))
-        if 'Hour 2' in e.title:
+        elif 'Hour 2' in e.title:
             fe.published(date + timedelta(hours=2))
-        if 'Hour 3' in e.title:
+        elif 'Hour 3' in e.title:
             fe.published(date + timedelta(hours=3))
+        else:
+            fe.published(date + timedelta(hours=-1))
 
     fg.rss_str(pretty=True)
     fg.rss_file(output_file)
