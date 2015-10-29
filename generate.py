@@ -36,7 +36,7 @@ def generate_feed(output_file, exclude_highlights=True):
     fg.podcast.itunes_explicit(itunes_explicit='clean')
     fg.podcast.itunes_owner(name=CONTACT['name'], email=CONTACT['email'])
 
-    tz = pytz.timezone('Europe/Amsterdam')
+    tz = pytz.timezone('America/Los_Angeles')
 
     for e in d.entries:
 
