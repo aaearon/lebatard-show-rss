@@ -1,17 +1,17 @@
 from datetime import datetime, timedelta
 import time
+import sys
 
 from feedgen.feed import FeedGenerator
 import feedparser
 import pytz
-import sys
 
 ESPN_RSS_FEED = 'http://espn.go.com/espnradio/feeds/rss/podcast.xml?id=9941853'
 CONTACT = {'name': 'Tim Schindler',
            'email': 'tim.schindler@gmail.com'}
 
 
-def generate_feed(output_file):
+def generate_feed(output_file, exclude_highlights=True):
     # Parse RSS feed
     d = feedparser.parse(ESPN_RSS_FEED)
     IMAGE_URL = d.feed.image['href']
@@ -39,31 +39,35 @@ def generate_feed(output_file):
     tz = pytz.timezone('Europe/Amsterdam')
 
     for e in d.entries:
-        fe = fg.add_entry()
 
-        fe.id(e.id)
-        fe.title(e.title)
-        fe.description(e.description)
-        fe.enclosure(url=e.enclosures[0]['href'],
-                     length=e.enclosures[0]['length'],
-                     type=e.enclosures[0]['type'])
-
-        fe.podcast.itunes_summary(e.description)
-        fe.podcast.itunes_subtitle(e.description)
-
-        dt = datetime.fromtimestamp(time.mktime(e.published_parsed))
-        date = tz.localize(dt)
-
-        if 'Local Hour' in e.title:
-            fe.published(date)
-        elif 'Hour 1' in e.title:
-            fe.published(date + timedelta(hours=1))
-        elif 'Hour 2' in e.title:
-            fe.published(date + timedelta(hours=2))
-        elif 'Hour 3' in e.title:
-            fe.published(date + timedelta(hours=3))
+        if exclude_highlights and 'Hour' not in e.title:
+            pass
         else:
-            fe.published(date + timedelta(hours=-1))
+            fe = fg.add_entry()
+
+            fe.id(e.id)
+            fe.title(e.title)
+            fe.description(e.description)
+            fe.enclosure(url=e.enclosures[0]['href'],
+                         length=e.enclosures[0]['length'],
+                         type=e.enclosures[0]['type'])
+
+            fe.podcast.itunes_summary(e.description)
+            fe.podcast.itunes_subtitle(e.description)
+
+            dt = datetime.fromtimestamp(time.mktime(e.published_parsed))
+            date = tz.localize(dt)
+
+            if 'Local Hour' in e.title:
+                fe.published(date)
+            elif 'Hour 1' in e.title:
+                fe.published(date + timedelta(hours=1))
+            elif 'Hour 2' in e.title:
+                fe.published(date + timedelta(hours=2))
+            elif 'Hour 3' in e.title:
+                fe.published(date + timedelta(hours=3))
+            else:
+                fe.published(date + timedelta(hours=-1))
 
     fg.rss_str(pretty=True)
     fg.rss_file(output_file)
