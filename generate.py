@@ -40,7 +40,7 @@ def generate_feed(output_file, exclude_highlights=True):
 
     for e in d.entries:
 
-        if exclude_highlights and 'Hour' not in e.title:
+        if exclude_highlights and 'The Dan Le Batard Show' not in e.title:
             pass
         else:
             fe = fg.add_entry()
@@ -58,7 +58,8 @@ def generate_feed(output_file, exclude_highlights=True):
             dt = datetime.fromtimestamp(time.mktime(e.published_parsed))
             date = tz.localize(dt)
 
-            if 'Local Hour' in e.title:
+            # Local hour
+            if 'Show: ' in e.title:
                 fe.published(date)
             elif 'Hour 1' in e.title:
                 fe.published(date + timedelta(hours=1))
