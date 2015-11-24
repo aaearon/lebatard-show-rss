@@ -1,15 +1,22 @@
-from datetime import datetime, timedelta
-import time
 import sys
+import time
+from datetime import datetime, timedelta
 
-from feedgen.feed import FeedGenerator
 import feedparser
 import pytz
+from feedgen.feed import FeedGenerator
 
 ESPN_RSS_FEED = 'http://espn.go.com/espnradio/feeds/rss/podcast.xml?id=9941853'
 CONTACT = {'name': 'Tim Schindler',
            'email': 'tim.schindler@gmail.com'}
 
+
+def episode_duration_string_to_int(duration):
+    if len(duration.split(':')) == 3:
+        ftr = [3600, 60, 1]
+    else:
+        ftr = [60, 1]
+    return sum([a * b for a, b in zip(ftr, [int(i) for i in duration.split(":")])])
 
 def generate_feed(output_file, exclude_highlights=True):
     # Parse RSS feed
@@ -40,7 +47,7 @@ def generate_feed(output_file, exclude_highlights=True):
 
     for e in d.entries:
 
-        if exclude_highlights and 'The Dan Le Batard Show' not in e.title:
+        if exclude_highlights and episode_duration_string_to_int(e['itunes_duration']) > 3600:
             pass
         else:
             fe = fg.add_entry()
