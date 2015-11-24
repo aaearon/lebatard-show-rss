@@ -54,6 +54,7 @@ def generate_feed(output_file, exclude_highlights=True):
 
             fe.podcast.itunes_summary(e.description)
             fe.podcast.itunes_subtitle(e.description)
+            fe.podcast.itunes_duration(e['itunes_duration'])
 
             dt = datetime.fromtimestamp(time.mktime(e.published_parsed))
             date = tz.localize(dt)
