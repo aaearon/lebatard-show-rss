@@ -30,7 +30,7 @@ def generate_feed(output_file, exclude_highlights=True):
     ## RSS tags
     # Required
     fg.title(d.feed.title)
-    fg.link(href='http://sports.espn.go.com/espnradio/podcast/index')
+    fg.link(href='https://github.com/aaearon/lebatard-show-rss')
     fg.description(d.feed.description)
     # Optional
     fg.language(d.feed.language)
